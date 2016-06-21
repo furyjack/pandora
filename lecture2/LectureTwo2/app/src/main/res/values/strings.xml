@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Profile</string>
+    <string name="str">Interests: \n&#8226;item1\n &#8226;item2 \n &#8226;item3</string>
+    <string name="str1">Skills: \n&#8226;item1\n &#8226;item2 \n &#8226;item3</string>
+</resources>
