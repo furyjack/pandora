@@ -36,6 +36,19 @@ public static ArrayList<student> getStudent()
     students.add(new student("Nisith",55,R.drawable.sample_0));
     students.add(new student("Suri",25,R.drawable.sample_0));
     students.add(new student("Navjot",15,R.drawable.sample_0));
+    students.add(new student("Navjot1",15,R.drawable.sample_0));
+    students.add(new student("Navjot2",15,R.drawable.sample_0));
+    students.add(new student("Navjot3",15,R.drawable.sample_0));
+    students.add(new student("Navjot4",15,R.drawable.sample_0));
+    students.add(new student("Navjot5",15,R.drawable.sample_0));
+    students.add(new student("Navjot6",15,R.drawable.sample_0));
+    students.add(new student("Navjot7",15,R.drawable.sample_0));
+    students.add(new student("Navjot8",15,R.drawable.sample_0));
+    students.add(new student("Navjot9",15,R.drawable.sample_0));
+    students.add(new student("Navjot10",15,R.drawable.sample_0));
+    students.add(new student("Navjot11",15,R.drawable.sample_0));
+
+
 
 
     return  students;

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    tools:context="com.example.test.lecture6home_work.detail_activity">
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/profile"
+        android:src="@drawable/sample_0"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Deeksha"
+        android:id="@+id/tv_d_name"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:paddingLeft="20dp"
+        android:textSize="40sp"
+        android:layout_gravity="bottom"
+        />
+
+
+</FrameLayout>

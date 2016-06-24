@@ -1,0 +1,93 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    tools:context="com.example.test.lecture6home_work.Fragment_people">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        >
+<ImageView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:src="@drawable/sample_0"
+    android:scaleType="fitXY"
+    android:id="@+id/profile_id"
+
+    />
+
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Deeksha"
+         android:id="@+id/tv_name"
+         android:textStyle="bold"
+         android:textColor="#ffffff"
+         android:paddingLeft="20dp"
+         android:textSize="40sp"
+         android:layout_gravity="bottom"
+         />
+    </FrameLayout>
+
+    <View
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="?android:attr/listDivider" />
+
+    <LinearLayout
+        android:layout_marginTop="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone and status"
+        android:padding="10dp"
+        android:textColor="#00897B"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textSize="25sp"
+
+
+        />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="9910431883"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="30sp"
+            android:id="@+id/mob_no"
+            />
+
+        <View
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:backgroundTint="@android:color/black"
+            android:background="?android:attr/listDivider" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:padding="10dp"
+            android:text="Those who are dead may never die"
+             android:id="@+id/status"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
