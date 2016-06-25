@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import android.widget.Toast;
  * A simple {@link Fragment} subclass.
  */
 public class Fragment_people extends Fragment {
+    
+    String TAG="myactivity";
 
     ImageView profile_img;
     String Name;
@@ -29,6 +32,7 @@ public class Fragment_people extends Fragment {
 
     public void change_object(String name,int profile_id,String status,String mob_no)
     {
+        Log.d(TAG, "change_object: called");
         if(item!=null)
         {
             Name=name;
@@ -51,10 +55,14 @@ public class Fragment_people extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: called");
+        profile_img_id=R.drawable.sample_0;
+        Name="Deeksha";
         // Inflate the layout for this fragment
         item=inflater.inflate(R.layout.fragment_fragment_people, container, false);
         profile_img= (ImageView) item.findViewById(R.id.profile_id);
         final TextView tv=(TextView)item.findViewById(R.id.mob_no);
+
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

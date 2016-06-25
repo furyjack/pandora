@@ -1,6 +1,7 @@
 package com.example.test.lecture6home_work;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,8 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
         final FragmentManager fragMgr = getSupportFragmentManager();
         fragment_people=new Fragment_people();
+        People.people object=students.get(0);
 
         fragMgr.beginTransaction().add(R.id.fl_main,fragment_people,null).commit();
+
+
 
 
 
