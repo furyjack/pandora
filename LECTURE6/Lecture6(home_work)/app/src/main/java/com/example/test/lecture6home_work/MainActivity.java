@@ -57,26 +57,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRecyclerView();
-        recyclerView.addOnItemTouchListener(
-
-                new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        People.people object=students.get(position);
-                        Toast.makeText(MainActivity.this, object.name, Toast.LENGTH_SHORT).show();
-
-                        fragment_people.change_object(object.name,object.profileimg_id,object.status,object.mob_no);
-
-                    }
-                })
-
-
-
-        );
 
 
         setFragment();
-
+        fragment_people.setOncreateViewListener(new Fragment_people.OnCreateViewListner() {
+            @Override
+            public void onCreateViewCalled() {
+                People.people object = students.get(0);
+                fragment_people.change_object(object.name,object.profileimg_id,object.status,object.mob_no);
+            }
+        });
 
 
 
@@ -132,12 +122,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(PeopleViewHolder holder, int position) {
+        public void onBindViewHolder(final PeopleViewHolder holder, final int position) {
 
 
 
             People.people myobject=mlist.get(position);
             holder.profile.setImageDrawable(getDrawable(myobject.profileimg_id));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    int pos=holder.getAdapterPosition();
+                    People.people object=students.get(pos);
+                    Toast.makeText(MainActivity.this, object.name, Toast.LENGTH_SHORT).show();
+
+                    fragment_people.change_object(object.name,object.profileimg_id,object.status,object.mob_no);
+
+
+                }
+            });
 
 
         }

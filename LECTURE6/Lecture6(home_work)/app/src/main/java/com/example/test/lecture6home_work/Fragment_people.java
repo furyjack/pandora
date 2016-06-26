@@ -24,6 +24,7 @@ public class Fragment_people extends Fragment {
     ImageView profile_img;
     String Name;
     int profile_img_id;
+    OnCreateViewListner ocvl;
 
     public View  item=null;
     public Fragment_people() {
@@ -51,6 +52,14 @@ public class Fragment_people extends Fragment {
 
 
     }
+    public void setOncreateViewListener(OnCreateViewListner listner)
+    {
+        ocvl=listner;
+
+
+
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +69,7 @@ public class Fragment_people extends Fragment {
         Name="Deeksha";
         // Inflate the layout for this fragment
         item=inflater.inflate(R.layout.fragment_fragment_people, container, false);
+        ocvl.onCreateViewCalled();
         profile_img= (ImageView) item.findViewById(R.id.profile_id);
         final TextView tv=(TextView)item.findViewById(R.id.mob_no);
 
@@ -90,6 +100,12 @@ public class Fragment_people extends Fragment {
             }
         });
         return item;
+    }
+
+    public interface OnCreateViewListner
+    {
+        void onCreateViewCalled();
+
     }
 
 }
