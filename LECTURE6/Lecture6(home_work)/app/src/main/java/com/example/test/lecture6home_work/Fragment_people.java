@@ -65,8 +65,8 @@ public class Fragment_people extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: called");
-        profile_img_id=R.drawable.sample_0;
-        Name="Deeksha";
+       
+
         // Inflate the layout for this fragment
         item=inflater.inflate(R.layout.fragment_fragment_people, container, false);
         ocvl.onCreateViewCalled();
