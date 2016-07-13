@@ -22,8 +22,17 @@ public class TaskModel {
         return deadline;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public int getDone() {
+        return Done;
+    }
+
     public int isDone() {
         return Done;
+
     }
 
     public void setDone(int done) {

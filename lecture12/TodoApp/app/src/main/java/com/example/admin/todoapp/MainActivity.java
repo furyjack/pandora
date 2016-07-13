@@ -2,11 +2,14 @@ package com.example.admin.todoapp;
 
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -31,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     SQLiteDatabase mDB;
     ArrayList<TaskModel>tasks;
     TaskAdapter Adapter;
+    private float x1,x2;
+    static final int MIN_DISTANCE = 50;
 
 
 
@@ -38,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
     {
 
         final Calendar c = Calendar.getInstance();
-       int mYear = c.get(Calendar.YEAR);
+       final int mYear = c.get(Calendar.YEAR);
       final int  mMonth = c.get(Calendar.MONTH);
-        int mDay = c.get(Calendar.DAY_OF_MONTH);
+        final int mDay = c.get(Calendar.DAY_OF_MONTH);
 
 
         DatePickerDialog dialog=new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
@@ -48,11 +53,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                myear=year;
-                mmonth=monthOfYear;
-                mday=dayOfMonth;
+               if(year>=mYear && monthOfYear>=mMonth && dayOfMonth>=mDay) {
+                   myear = year;
+                   mmonth = monthOfYear;
+                   mday = dayOfMonth;
+               }
+                else
+                   Toast.makeText(MainActivity.this, "Please select a valid date", Toast.LENGTH_SHORT).show();
 
-                Toast.makeText(MainActivity.this, "year: "+myear + " month: "+mmonth+" day: "+mday, Toast.LENGTH_SHORT).show();
+
             }
         },mYear,mMonth,mDay);
 
@@ -92,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         value.put(TaskTable.Columns.NAME,newtask.getName());
         value.put(TaskTable.Columns.DEADLINE,newtask.getDeadline());
         value.put(TaskTable.Columns.DONE,newtask.isDone());
-        Toast.makeText(MainActivity.this, ""+mDB.insert(TaskTable.tb_name,null,value), Toast.LENGTH_SHORT).show();
+        newtask.setId(mDB.insert(TaskTable.tb_name,null,value));
         tasks.add(newtask);
         Adapter.notifyDataSetChanged();
 
@@ -105,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void set_recyclerview()
     {
-
+        //tasklist.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.RED).sizeResId(150).marginResId(30, 100).build());
 
      Adapter=new TaskAdapter(tasks);
 
@@ -122,6 +131,35 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void load_data()
+    {
+
+        Cursor c=mDB.query(TaskTable.tb_name,TaskTable.projection,null,null,null,null,null);
+        while(c.moveToNext())
+        {
+
+
+                 int id= c.getInt(c.getColumnIndex(TaskTable.Columns.ID));
+                String name=     c.getString(c.getColumnIndex(TaskTable.Columns.NAME));
+                String date=     c.getString(c.getColumnIndex(TaskTable.Columns.DEADLINE));
+                int done=     c.getInt(c.getColumnIndex(TaskTable.Columns.DONE));
+
+                TaskModel obj=new TaskModel(name,date);
+                obj.setId(id);
+                obj.setDone(done);
+
+             tasks.add(obj);
+             Adapter.notifyDataSetChanged();
+
+
+
+        }
+
+        c.close();
+
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,53 +167,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initialize_components();
         mDB=DatabaseCreator.openWriteableDatabse(this);
-        mDB.delete(TaskTable.tb_name, null, null);
         set_recyclerview();
-
-
-
- //       SQLiteDatabase mDB=DatabaseCreator.openWriteableDatabse(this);
-//        ArrayList<TaskModel> tasks= Utils.getTasks();
-//        mDB.delete(TaskTable.tb_name, null, null);
-//        //write tasks to db
-//
-//        for(int i=0;i<tasks.size();i++)
-//       {
-//           ContentValues values=new ContentValues();
-//           values.put(TaskTable.Columns.NAME,tasks.get(i).getName());
-//           values.put(TaskTable.Columns.DEADLINE,tasks.get(i).getDeadline());
-//           values.put(TaskTable.Columns.DONE,tasks.get(i).isDone());
-//
-//           tasks.get(i).setId( mDB.insert(TaskTable.tb_name,null,values));
-//
-//       }
-//
-//        Cursor c=mDB.query(TaskTable.tb_name,TaskTable.projection,null,null,null,null,null);
-//
-//        Log.d(TAG, "database size = " + c.getCount());
-//
-//        while(c.moveToNext())
-//        {
-//
-//
-//            Log.d(TAG, "ID = "+ c.getInt(c.getColumnIndex(TaskTable.Columns.ID))+"\n");
-//            Log.d(TAG, "NAME = "+ c.getString(c.getColumnIndex(TaskTable.Columns.NAME))+"\n");
-//            Log.d(TAG, "DEADLINE = "+ c.getString(c.getColumnIndex(TaskTable.Columns.DEADLINE))+"\n");
-//            Log.d(TAG, "DONE = "+ c.getInt(c.getColumnIndex(TaskTable.Columns.DONE))+"\n");
-//
-//
-//
-//
-//        }
-//
-//
-//
-//
-//
-//
-//
-
-
+        load_data();
 
     }
 
@@ -193,6 +186,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void datastatuschange(long id,int done)
+    {
+
+        ContentValues values=new ContentValues();
+        values.put(TaskTable.Columns.DONE,done);
+        String selection = TaskTable.Columns.ID + " LIKE ?";
+        String[] selectionArgs = { String.valueOf(id) };
+        mDB.update(TaskTable.tb_name,values,selection,selectionArgs);
+
+
+
+    }
+
+    public void delete_data(long id)
+    {
+        String selection = TaskTable.Columns.ID + " LIKE ?";
+        String[] selectionArgs = { String.valueOf(id) };
+
+        mDB.delete(TaskTable.tb_name,selection,selectionArgs);
+
+
+
+    }
+
+
     public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder>
     {
         ArrayList<TaskModel> mlist;
@@ -206,17 +224,82 @@ public class MainActivity extends AppCompatActivity {
             View Itemview=getLayoutInflater().inflate(R.layout.task_list_item,parent,false);
             TaskViewHolder holder=new TaskViewHolder(Itemview);
 
+
             return holder;
 
 
         }
 
         @Override
-        public void onBindViewHolder(TaskViewHolder holder, int position) {
+        public void onBindViewHolder(final TaskViewHolder holder, final int position) {
 
-          TaskModel task=mlist.get(position);
+            final TaskModel task=mlist.get(position);
             holder.task_name.setText(task.getName());
             holder.task_date.setText(task.getDeadline());
+            if(task.getDone()==1)
+                holder.task_name.setPaintFlags(holder.task_name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    TaskModel obj=mlist.get(position);
+                    long id=obj.getId();
+                    obj.setDone((obj.getDone()+1)%2);
+                    datastatuschange(id,obj.getDone());
+
+                    if(obj.getDone()==1)
+                    {
+                        holder.task_name.setPaintFlags(holder.task_name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    }
+                    else
+                    {
+                     holder.task_name.setPaintFlags(0);
+                    }
+
+                }
+            });
+
+            holder.itemView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    TaskModel obj=mlist.get(position);
+
+
+
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            x1 = event.getX();
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            x2 = event.getX();
+                            float deltaX = x2 - x1;
+                            if (deltaX < 0) {
+
+                            }else if(deltaX >MIN_DISTANCE){
+                                Toast.makeText(MainActivity.this,
+                                        "Deleted",
+                                        Toast.LENGTH_SHORT).show();
+                                //delete object
+
+                                tasks.remove(position);
+                                Adapter.notifyDataSetChanged();
+
+                                //remove from database
+                               delete_data(obj.getId());
+
+
+
+                            }
+                            break;
+                    }
+
+
+                    return false;
+                }
+            });
+
+
 
 
         }
