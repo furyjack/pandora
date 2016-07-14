@@ -238,7 +238,8 @@ public class MainActivity extends AppCompatActivity {
             holder.task_date.setText(task.getDeadline());
             if(task.getDone()==1)
                 holder.task_name.setPaintFlags(holder.task_name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
+            if(task.getDone()==0)
+                holder.task_name.setPaintFlags(0);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
