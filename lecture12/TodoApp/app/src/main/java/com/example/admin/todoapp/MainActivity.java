@@ -23,6 +23,8 @@ import com.example.admin.todoapp.models.TaskModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -103,6 +105,13 @@ public class MainActivity extends AppCompatActivity {
         value.put(TaskTable.Columns.DONE,newtask.isDone());
         newtask.setId(mDB.insert(TaskTable.tb_name,null,value));
         tasks.add(newtask);
+        Collections.sort(tasks, new Comparator<TaskModel>() {
+            @Override
+            public int compare(TaskModel lhs, TaskModel rhs) {
+                return lhs.getDeadline().compareTo(rhs.getDeadline());
+            }
+        });
+
         Adapter.notifyDataSetChanged();
 
 
@@ -149,11 +158,18 @@ public class MainActivity extends AppCompatActivity {
                 obj.setDone(done);
 
              tasks.add(obj);
-             Adapter.notifyDataSetChanged();
+
 
 
 
         }
+        Collections.sort(tasks, new Comparator<TaskModel>() {
+            @Override
+            public int compare(TaskModel lhs, TaskModel rhs) {
+                return lhs.getDeadline().compareTo(rhs.getDeadline());
+            }
+        });
+        Adapter.notifyDataSetChanged();
 
         c.close();
 
@@ -214,6 +230,8 @@ public class MainActivity extends AppCompatActivity {
     public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder>
     {
         ArrayList<TaskModel> mlist;
+
+
 
         public TaskAdapter(ArrayList<TaskModel> mlist) {
             this.mlist = mlist;
@@ -309,6 +327,10 @@ public class MainActivity extends AppCompatActivity {
         public int getItemCount() {
             return mlist.size();
         }
+
+
+
+
     }
 
 
@@ -316,3 +338,4 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
+
