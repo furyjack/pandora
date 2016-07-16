@@ -2,10 +2,14 @@ package com.example.admin.todoapp;
 
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Paint;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,12 +37,15 @@ public class MainActivity extends AppCompatActivity {
     int myear,mmonth,mday;
     RecyclerView tasklist;
     EditText etAddTask;
-    SQLiteDatabase mDB;
-    ArrayList<TaskModel>tasks;
-    TaskAdapter Adapter;
+   static SQLiteDatabase mDB;
+    static ArrayList<TaskModel>tasks;
+    static TaskAdapter Adapter;
     private float x1,x2;
     static final int MIN_DISTANCE = 50;
-
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private ShakeDetector mShakeDetector;
+    DeleteFragment fragment;
 
 
     public void setdate(View v)
@@ -81,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         mmonth=c.get(Calendar.MONTH);
         mday=c.get(Calendar.DAY_OF_MONTH);
         tasks=new ArrayList<>();
+        fragment=new DeleteFragment();
 
 
 
@@ -140,10 +148,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void load_data()
+    public static void load_data()
     {
 
         Cursor c=mDB.query(TaskTable.tb_name,TaskTable.projection,null,null,null,null,null);
+        tasks.clear();
         while(c.moveToNext())
         {
 
@@ -176,6 +185,43 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void delete_Db()
+    {
+        mDB.delete(TaskTable.tb_name, TaskTable.Columns.DONE + "=" + "1", null);
+        load_data();
+
+    }
+
+   public  void handleShakeEvent(int count)
+    {
+
+
+        fragment.show(getSupportFragmentManager(),"delete");
+
+
+
+    }
+
+    void set_Accelero()
+    {
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager
+                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector = new ShakeDetector();
+        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+
+            @Override
+            public void onShake(int count) {
+
+
+				  handleShakeEvent(count);
+            }
+        });
+
+
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,6 +231,20 @@ public class MainActivity extends AppCompatActivity {
         mDB=DatabaseCreator.openWriteableDatabse(this);
         set_recyclerview();
         load_data();
+        set_Accelero();
+        fragment.setmListener(new DeleteFragment.NoticeDialogListener() {
+            @Override
+            public void onDialogPositiveClick() {
+
+             delete_Db();
+
+            }
+
+            @Override
+            public void onDialogNegativeClick(DialogFragment dialog) {
+
+            }
+        });
 
     }
 
@@ -334,8 +394,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(mShakeDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
+    }
 
 
+    @Override
+    protected void onPause() {
 
+        mSensorManager.unregisterListener(mShakeDetector);
+        super.onPause();
+    }
 }
 
